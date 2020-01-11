@@ -69,3 +69,61 @@ namespace DecryptTool
             }
 
             string str10 = str8;
+            int num1 = str10.Length / 16;
+            int num2 = 16;
+            string[] strArray = new string[1600];
+            for (int index = 0; index < str10.Length; ++index)
+            {
+                int num3 = index / num2;
+                int num4 = index % num2;
+                strArray[num4 * num1 + num3] = (num4 * num1 + num3) % 2 != 1 ? str10.Substring(num3 * num2 + num4, 1) : (str10.Substring(num3 * num2 + num4, 1) == "1" ? "0" : "1");
+            }
+
+            string input = string.Join("", strArray);
+            string str11 = input.Length.ToString();
+            int num5 = 0;
+            for (int startIndex = 0; startIndex < str11.Length; ++startIndex)
+                num5 += (int)Convert.ToInt16(str11.Substring(startIndex, 1));
+            for (int index = num5 - 1; index < input.Length; index += num5)
+            {
+                int num6 = 0;
+                for (int startIndex = index - 1; startIndex > index - num5; --startIndex)
+                    num6 += (int)Convert.ToInt16(input.Substring(startIndex, 1));
+                if (num6 % 2 == 1)
+                {
+                    string str12 = input.Substring(index, 1) == "0" ? "1" : "0";
+                    input = input.Substring(0, index) + str12 + input.Substring(index + 1);
+                }
+            }
+
+            string str13 = input.Replace("1", "");
+            int num7 = input.Length - str13.Length;
+            int length2 = (int)Convert.ToInt16(num7.ToString().Substring(num7.ToString().Length - 1));
+            switch (length2)
+            {
+                case 0:
+                    length2 = 7;
+                    break;
+                case 1:
+                    length2 = 13;
+                    break;
+            }
+
+            for (int index1 = length2 - 1; index1 < input.Length; index1 += length2)
+            {
+                string str14 = input.Substring(index1 - (length2 - 1), length2);
+                string str15 = "";
+                for (int index2 = 0; index2 < length2; ++index2)
+                    str15 += str14.Substring(length2 - 1 - index2, 1);
+                input = input.Substring(0, index1 - (length2 - 1)) + str15 + input.Substring(index1 + 1);
+            }
+
+            CaptureCollection captures = Regex.Match(input, "([01]{8})+").Groups[1].Captures;
+            byte[] bytes = new byte[captures.Count];
+            for (int i = 0; i < captures.Count; ++i)
+                bytes[i] = Convert.ToByte(captures[i].Value, 2);
+            string str16 = Encoding.Unicode.GetString(bytes, 0, bytes.Length);
+            return str16.Substring(0, str16.LastIndexOf("A"));
+        }
+    }
+}
