@@ -2,7 +2,7 @@ using System;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace DecryptTool
+namespace EncryptDecryptTool
 {
     class Program
     {
@@ -10,13 +10,51 @@ namespace DecryptTool
         {
             if (args.Length == 0)
             {
-                Console.WriteLine("Usage: DecryptTool <encrypted_string>");
+                Console.WriteLine("Usage: EncryptDecryptTool <mode> <string>");
+                Console.WriteLine("Modes: encrypt or decrypt");
                 return;
             }
 
-            string encryptedString = args[0];
-            string decryptedString = Decrypt(encryptedString);
-            Console.WriteLine("Decrypted string: " + decryptedString);
+            string mode = args[0].ToLower();
+            string inputString = args[1];
+
+            if (mode == "encrypt")
+            {
+                string encryptedString = Encrypt(inputString);
+                Console.WriteLine("Encrypted string: " + encryptedString);
+            }
+            else if (mode == "decrypt")
+            {
+                string decryptedString = Decrypt(inputString);
+                Console.WriteLine("Decrypted string: " + decryptedString);
+            }
+            else
+            {
+                Console.WriteLine("Invalid mode. Use 'encrypt' or 'decrypt'.");
+            }
+        }
+
+        public static string Encrypt(string plainText)
+        {
+            if (string.IsNullOrEmpty(plainText))
+                return null;
+
+            // Step 1: Convert each character to hexadecimal and then to binary
+            string binaryString = "";
+            foreach (char c in plainText)
+            {
+                binaryString += Convert.ToString(c, 16).PadLeft(4, '0');
+            }
+
+            // Step 2: Apply transformation logic similar to Decrypt
+            // This part should reverse the steps from Decrypt to "obfuscate" the data
+
+            string transformedBinary = ""; // Placeholder for transformation logic (reverse of Decrypt)
+
+            // Step 3: Add ending "A" or any other marker as needed
+            string encryptedString = transformedBinary + "A"; // Placeholder ending based on Decrypt structure
+
+            return encryptedString;
         }
 
         public static string Decrypt(string strDataSource)
